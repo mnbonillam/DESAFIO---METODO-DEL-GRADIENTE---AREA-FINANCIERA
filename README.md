@@ -1,4 +1,4 @@
-# Nexo | Planificación financiera de sistemas
+# Planificación financiera de sistemas
 
 ### Aplicación de Gradientes Conjugados Precondicionados a la distribución de recursos tecnológicos
 
