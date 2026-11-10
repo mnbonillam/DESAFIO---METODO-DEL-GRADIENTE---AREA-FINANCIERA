@@ -1,74 +1,211 @@
-# Nexo — Planificación financiera de sistemas
+# Nexo | Planificación financiera de sistemas
 
-Desafío individual de Métodos Numéricos (UMSA), enfoque Ingeniería de Sistemas.
+### Aplicación de Gradientes Conjugados Precondicionados a la distribución de recursos tecnológicos
 
-## Ejecución local
+**Universidad Mayor de San Andrés · Carrera de Informática**  
+**Mención: Ingeniería de Sistemas · Métodos Numéricos**
 
-No requiere instalar dependencias. Abra `dist/index.html` en un navegador moderno o ejecute:
+## Presentación
 
-```sh
-python3 -m http.server 8080 --directory dist
-```
+Nexo es una página web interactiva que permite analizar la planificación presupuestaria de una empresa de servicios digitales mediante métodos numéricos.
 
-Visite http://localhost:8080. Para las pruebas numéricas use Node.js:
+El proyecto estudia cómo distribuir recursos entre cuatro áreas relacionadas: **infraestructura, desarrollo, ciberseguridad y soporte**. A través de tres escenarios financieros, permite observar cómo cambian los presupuestos y cómo responde el método de Gradientes Conjugados Precondicionados (GCP).
 
-```sh
-node test.cjs
-```
+La página integra el caso de estudio, la formulación matemática, un simulador editable, gráficos de convergencia, análisis de errores y pruebas de calidad.
 
-## Arquitectura
+> Los datos son simulados con fines académicos. No representan información financiera de una empresa real.
 
-- `dist/index.html`: caso de estudio, formulación, procesos, referencias y contenedores.
-- `dist/math.js`: operaciones matriciales puras, Cholesky, GC/GCP, condición y escenarios.
-- `dist/app.js`: eventos, validaciones, tablas, gráficos SVG y QA de interfaz.
-- `dist/style.css`: diseño adaptable a móviles e impresión.
-- `test.cjs`: comprobaciones reproducibles de precisión, convergencia y validación.
+## Problema que aborda
 
-Sin backend, base de datos, framework ni API financiera. Los datos se recalculan en el navegador. Solo el nombre introducido se conserva localmente en localStorage; no se transmite. Google Fonts es opcional: el diseño tiene fuentes de respaldo.
+La planificación de recursos tecnológicos requiere considerar las necesidades de cada departamento y sus relaciones con el resto de la organización.
 
-## Modelo
+Una decisión sobre infraestructura puede afectar al desarrollo; las decisiones de desarrollo requieren coordinación con seguridad; y soporte necesita recursos para mantener la continuidad del servicio.
 
-Variables: presupuestos trimestrales en miles de Bs para infraestructura, desarrollo, ciberseguridad y soporte. Se minimiza J(x) = 1/2 sum(w_i (x_i-t_i)^2) + c/2 sum((x_i-x_{i+1})^2), c=0.5. La estacionariedad produce A=diag(w)+cL y b_i=w_i*t_i, con L laplaciano de la cadena de dependencias. Para todo v no nulo, v^TAv=sum(w_i v_i^2)+c sum((v_i-v_{i+1})^2)>0; por tanto A es SPD en los tres casos.
+Nexo plantea la siguiente pregunta:
 
-- Ideal: w=[2,3,2,3], t=[40,55,30,25].
-- Estrés: mismo w, t=[35,42,30,20].
-- Mal condicionado: w=[1,100,10000,1000000], t ideal. Rigidez contractual heterogénea exagerada para estudiar escalamiento.
+**¿Cómo calcular una asignación presupuestaria que equilibre las metas de cada área y la coordinación entre ellas, y qué tan confiable es la solución numérica obtenida?**
 
-Datos simulados; no representan datos observados ni estimaciones reales. El fondo indicativo es 160 mil Bs. No se imponen restricciones duras de caja ni no negatividad; se señalan para revisión. En el modelo original la estructura M-matriz y b positivo producen presupuestos positivos. Si se requieren restricciones vinculantes debe usarse optimización restringida.
+## Enfoque en Ingeniería de Sistemas
 
-## Algoritmos y precisión
+El proyecto analiza la organización como un conjunto de procesos interdependientes.
 
-Referencia: Cholesky A=LL^T y dos sustituciones triangulares. GCP: precondicionador M=diag(A), resolución Mz=r, direcciones conjugadas y coeficientes alpha/beta. GC usa M=I. x0=0, tolerancia 1e-6, Nmax=100. El residuo verdadero se vuelve a calcular para verificar la parada. Para b=0 se usa la norma absoluta y se indica en la interfaz.
+Su aporte se concentra en:
 
-Se reporta kappa_infinito(B)=||B||_infinito ||B^-1||_infinito para A y M^-1 A; la inversa se obtiene por Gauss-Jordan con pivoteo parcial. No se usa cociente de autovalores para una matriz no simétrica. Errores por componente: absoluto, relativo y porcentual. Denominador cero: no definido.
+- **Modelado de procesos:** relaciona planificación, evaluación y aprobación presupuestaria.
+- **Dependencias organizacionales:** incorpora coordinación entre las cuatro unidades.
+- **Reglas de negocio:** verifica presupuestos no negativos y su relación con un fondo indicativo.
+- **Apoyo a decisiones:** permite comparar alternativas antes de aprobar recursos.
+- **Trazabilidad:** muestra los supuestos, procedimientos y errores de cada cálculo.
 
-Resultados por defecto: ideal 4/4 iteraciones GCP/GC; estrés 4/4; mal condicionado 2/5, condición original 671075.2176 y precondicionada 1.7829203. La tolerancia global no garantiza precisión monetaria por componente: el caso extremo exhibe aproximadamente 0.16% de error máximo; use 1e-10 o menor para estudiar este efecto.
+La solución es una propuesta de planificación. La aprobación de los presupuestos corresponde a los responsables de la organización.
 
-## Pruebas
+## Variables del modelo
 
-La página ejecuta 10 pruebas: 3 cargas, matriz asimétrica, matriz indefinida, recálculo del motor, comparación de Jacobi, límite de iteraciones, b nulo y edición real por evento de interfaz. La prueba UI restaura el valor después de comprobar el recálculo. `node test.cjs` añade verificación a 1e-12, menores positivos y valores no finitos. La matriz es fija de orden 4 en la interfaz (cumple n>=4).
+Los presupuestos se expresan en **miles de bolivianos por trimestre**.
 
-## Publicación en GitHub/GitLab
+| Variable | Área | Destino de los recursos |
+|---|---|---|
+| x₁ | Infraestructura | Nube, redes y continuidad de plataforma |
+| x₂ | Desarrollo | Personal, integración y entregas de software |
+| x₃ | Ciberseguridad | Prevención, monitoreo y protección |
+| x₄ | Soporte | Atención, operación y continuidad del servicio |
 
-Este proyecto contiene todo el código y pruebas, sin secretos ni dependencias de compilación. Para un repositorio académico público, cree un repositorio vacío en su cuenta y suba estos archivos. Con Git:
+## Fundamento matemático
 
-```sh
-git init
-git add .
-git commit -m "Implementar modelo financiero y simulador GCP"
-git branch -M main
-git remote add origin URL_DEL_REPOSITORIO
-git push -u origin main
-```
+El modelo equilibra dos objetivos: aproximar cada presupuesto a su meta y reducir diferencias entre áreas conectadas.
 
-La URL del repositorio debe ser real y pública; el ZIP descargable no sustituye este requisito de la consigna. El alojamiento de la página es independiente del repositorio académico.
+La función de planificación es:
+
+$$
+J(x)=\frac{1}{2}\sum_{i=1}^{4}w_i(x_i-t_i)^2
++\frac{c}{2}\sum_{i=1}^{3}(x_i-x_{i+1})^2
+$$
+
+Donde:
+
+- **tᵢ:** meta presupuestaria del área.
+- **wᵢ:** ponderación de la desviación respecto a esa meta.
+- **c:** ponderación de la coordinación entre áreas.
+
+Al establecer la condición de mínimo se obtiene:
+
+$$
+Ax=b
+$$
+
+La matriz se construye como:
+
+$$
+A=\operatorname{diag}(w)+cL
+$$
+
+Aquí, **L** es el laplaciano de la cadena de dependencias entre las cuatro áreas.
+
+En los escenarios originales, las ponderaciones positivas garantizan que **A sea simétrica y definida positiva**, condición necesaria para aplicar los métodos utilizados.
+
+## Escenarios financieros
+
+| Escenario | Situación representada | Propósito del análisis |
+|---|---|---|
+| Ideal | Metas y ponderaciones equilibradas | Evaluar precisión y convergencia en condiciones estables |
+| Bajo estrés | Reducción de metas en algunas áreas, manteniendo la meta de seguridad | Analizar el efecto financiero de modificar el vector b |
+| Mal condicionado | Ponderaciones contractuales de escalas muy diferentes | Examinar la estabilidad y el aporte del precondicionamiento |
+
+Los tres escenarios conservan las mismas variables y la estructura general del modelo.
+
+## Métodos implementados
+
+### Cholesky: solución numérica de referencia
+
+Calcula una solución mediante factorización y sustituciones triangulares. Sirve como referencia para evaluar las aproximaciones iterativas.
+
+### Gradientes Conjugados — GC
+
+Resuelve el sistema sin precondicionamiento y permite establecer una comparación con GCP.
+
+### Gradientes Conjugados Precondicionados — GCP
+
+Utiliza el precondicionador de Jacobi:
+
+$$
+M=\operatorname{diag}(A)
+$$
+
+Su finalidad es compensar diferencias de escala y favorecer la convergencia.
+
+La configuración inicial utiliza un vector nulo, un máximo de 100 iteraciones y el criterio:
+
+$$
+\frac{\|b-Ax_k\|_2}{\|b\|_2}<10^{-6}
+$$
+
+## Funcionalidades de la página
+
+- Carga rápida de los tres escenarios.
+- Edición de la matriz A y el vector b.
+- Vinculación opcional de entradas simétricas.
+- Configuración del vector inicial, tolerancia e iteraciones máximas.
+- Selección de Jacobi o identidad como precondicionador.
+- Recálculo automático de soluciones y errores.
+- Gráfico de convergencia de GCP y GC.
+- Visualización del presupuesto por área.
+- Tabla comparativa de escenarios.
+- Consulta del factor de Cholesky y los menores principales.
+- Bitácora de iteraciones con aproximaciones, α, β y residuos.
+- Ejecución de pruebas de calidad desde la interfaz.
+
+## Análisis de precisión
+
+La página presenta:
+
+- Error absoluto por componente.
+- Error relativo por componente.
+- Error porcentual por componente.
+- Residuo global.
+- Número de condición de A y de M⁻¹A, calculados con la norma infinito.
+
+**Un residuo global pequeño no garantiza que todos los presupuestos tengan un error individual pequeño.** Por ello, la interpretación debe considerar también los errores por área.
+
+## Resultados de los escenarios originales
+
+Configuración: Jacobi, vector inicial nulo y tolerancia de 10⁻⁶.
+
+| Indicador | Ideal | Bajo estrés | Mal condicionado |
+|---|---:|---:|---:|
+| Presupuesto total de referencia, en miles de Bs | 151,64 | 127,39 | 154,77 |
+| Iteraciones GC | 4 | 4 | 5 |
+| Iteraciones GCP | 4 | 4 | 2 |
+| κ∞(A) | 2,365729 | 2,365729 | 671.075,217605 |
+| κ∞(M⁻¹A) | 1,897698 | 1,897698 | 1,782920 |
+| Convergencia GCP | Sí | Sí | Sí |
+
+En el escenario mal condicionado, Jacobi reduce las iteraciones necesarias para alcanzar la tolerancia establecida. Esta comparación mide **iteraciones**, no tiempo de ejecución.
+
+## Control de calidad
+
+La página incorpora diez pruebas ejecutables:
+
+1. Carga del escenario ideal.
+2. Carga del escenario bajo estrés.
+3. Carga del escenario mal condicionado.
+4. Rechazo de una matriz no simétrica.
+5. Rechazo de una matriz no definida positiva.
+6. Recálculo del motor al modificar los datos.
+7. Comparación de iteraciones entre GCP y GC.
+8. Detección del límite de iteraciones.
+9. Tratamiento del vector b nulo.
+10. Actualización mediante un evento real de edición en la interfaz.
+
+Cada prueba muestra su entrada, resultado esperado, resultado obtenido y conclusión.
+
+## Cómo explorar la página
+
+1. Revisa el caso de estudio y las variables.
+2. Selecciona un escenario en el simulador.
+3. Observa sus presupuestos, errores y convergencia.
+4. Modifica los datos para explorar otras condiciones.
+5. Consulta la comparación entre escenarios.
+6. Ejecuta las pruebas de calidad.
+7. Revisa las conclusiones antes de interpretar los resultados.
+
+## Alcance y limitaciones
+
+El modelo utiliza datos académicos y cuatro variables presupuestarias.
+
+El fondo de 160 mil Bs funciona como referencia de revisión: **no constituye una restricción impuesta al cálculo**. Tampoco se incorporan mínimos contractuales obligatorios.
+
+Si se requieren límites financieros estrictos, el problema debe ampliarse mediante optimización restringida.
+
+Las matrices editadas pueden ser válidas matemáticamente y, aun así, requerir una nueva justificación financiera.
+
+## Conclusión
+
+Nexo muestra cómo los métodos numéricos pueden apoyar la planificación de una organización tecnológica.
+
+El enfoque de Ingeniería de Sistemas conecta presupuestos, dependencias y reglas de negocio con un modelo verificable. La comparación entre GC y GCP permite comprender el papel del precondicionamiento, mientras que el análisis de errores ayuda a interpretar los resultados con mayor criterio.
 
 ## Referencias
 
-Suñagua S., P. (2020). Método de Gradientes Conjugados Precondicionado. Revista Boliviana de Matemática – UMSA 04, 2–7. https://cmat.umsa.bo/revmat/rbm4/psunagua_gcp.pdf
-
-Golub y Van Loan (2013), Matrix Computations, 4.ª ed.; Saad (2003), Iterative Methods for Sparse Linear Systems, 2.ª ed. (bibliografía complementaria de la consigna).
-
-## Limitaciones
-
-No se implementan restricciones de optimización, estimación con datos reales ni garantías de rendimiento para sistemas grandes. Se rechazan entradas inválidas; la precisión sigue limitada por IEEE-754. La ganancia medida es de iteraciones, no de tiempo. La interpretación financiera de una matriz editada debe revisarse manualmente. Complete el nombre de estudiante antes de presentar; queda guardado solo en su navegador.
+- Suñagua S., P. (2020). **Método de Gradientes Conjugados Precondicionado**. Revista Boliviana de Matemática – UMSA, 04, 2–7. [Consultar artículo](https://cmat.umsa.bo/revmat/rbm4/psunagua_gcp.pdf).
+- Golub, G. H. y Van Loan, C. F. (2013). **Matrix Computations**. 4.ª edición. Johns Hopkins University Press.
+- Saad, Y. (2003). **Iterative Methods for Sparse Linear Systems**. 2.ª edición. SIAM.
