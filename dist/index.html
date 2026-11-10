@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Desafio</title>
+    <meta
+      name="description"
+      content="Desafío de gradientes conjugados precondicionados aplicado a Ingeniería de Sistemas. Tres escenarios, pruebas y análisis financiero interactivo."
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <aside>
+      <a class="brand" href="#inicio"
+        ><span class="logo">Desafio</span><span class="branddot">.</span></a
+      >
+      <div class="sidecaption">LABORATORIO FINANCIERO</div>
+      <nav>
+        <a href="#inicio" class="active">01 <span>Visión general</span></a
+        ><a href="#modelo">02 <span>Modelo de sistemas</span></a
+        ><a href="#laboratorio">03 <span>Simulador</span></a
+        ><a href="#comparativa">04 <span>Tres escenarios</span></a
+        ><a href="#metodo">05 <span>Método y precisión</span></a
+        ><a href="#qa">06 <span>Control de calidad</span></a
+        ><a href="#conclusiones">07 <span>Conclusiones</span></a>
+      </nav>
+      <div class="sidebarbottom">
+        <div class="tag">INGENIERÍA DE SISTEMAS</div>
+        <p>UMSA · Métodos numéricos<br />Marcela Nadia Bonilla Mamani</p>
+      </div>
+    </aside>
+    <main>
+      <header>
+        <span>Planificación / <b>Presupuesto tecnológico</b></span
+        ><button class="outline" onclick="window.print()">
+          Imprimir análisis →
+        </button>
+      </header>
+      <section id="inicio">
+        <div class="eyebrow">DECISIONES CON FUNDAMENTO NUMÉRICO</div>
+        <h2>Area financiera<br /><em>Ingenieria en sistemas</em></h2>
+        <div class="herorow">
+          <p class="lede">
+            Distribuye recursos tecnológicos, explora el estrés financiero y
+            descubre cómo el precondicionamiento mejora la convergencia.
+          </p>
+          <a class="primary" href="#laboratorio"
+            >Explorar el simulador <span>→</span></a
+          >
+        </div>
+        <div class="herocards">
+          <div>
+            <span class="small">MODELO</span><strong>4 × 4</strong>
+            <p>Áreas interdependientes</p>
+          </div>
+          <div>
+            <span class="small">PRECISIÓN OBJETIVO</span
+            ><strong>10<sup>−6</sup></strong>
+            <p>Residuo relativo global</p>
+          </div>
+          <div>
+            <span class="small">ESCENARIOS</span><strong>03</strong>
+            <p>Ideal, estrés y mal escalamiento</p>
+          </div>
+          <div class="darkcard">
+            <span class="small">MÉTODO PRINCIPAL</span
+            ><strong>GCP <span class="mint">→</span></strong>
+            <p>Precondicionador de Jacobi</p>
+          </div>
+        </div>
+        <div class="student">
+          <label
+            >Estudiante
+            <input
+              id="student"
+              placeholder="Escribe tu nombre completo"
+              aria-label="Nombre del estudiante" /></label
+          ><span>Ingeniería de Sistemas · Carrera de Informática · UMSA</span>
+        </div>
+      </section>
+      <section id="modelo">
+        <div class="sectiontitle">
+          <div>
+            <div class="eyebrow">02 / CASO DE ESTUDIO</div>
+            <h2>Presupuestar una organización,<br />no cuatro silos.</h2>
+          </div>
+          <span class="badge">Caso hipotético · La Paz</span>
+        </div>
+        <p>
+          Una empresa de servicios digitales planifica los presupuestos
+          trimestrales de sus cuatro unidades. Desarrollo depende de la
+          infraestructura; seguridad acompaña a desarrollo; soporte sostiene la
+          continuidad del servicio. Se busca equilibrar metas financieras y
+          coordinación entre áreas.
+        </p>
+        <div class="units">
+          <article>
+            <span>01 / x₁</span>
+            <h3>Infraestructura</h3>
+            <p>Nube, redes y continuidad de plataforma.</p>
+          </article>
+          <article>
+            <span>02 / x₂</span>
+            <h3>Desarrollo</h3>
+            <p>Personal, integración y entregas de software.</p>
+          </article>
+          <article>
+            <span>03 / x₃</span>
+            <h3>Ciberseguridad</h3>
+            <p>Prevención, monitoreo y cumplimiento.</p>
+          </article>
+          <article>
+            <span>04 / x₄</span>
+            <h3>Soporte</h3>
+            <p>Atención, operación y acuerdos de servicio.</p>
+          </article>
+        </div>
+        <div class="twocol">
+          <article class="panel">
+            <h3>Del proceso al modelo</h3>
+            <p>
+              Finanzas define metas t; responsables de área acuerdan rigidez w;
+              el comité revisa dependencias; el simulador calcula; tesorería
+              valida disponibilidad y autoriza desembolsos. La salida es una
+              propuesta, no una transferencia automática.
+            </p>
+            <p>
+              Flujo financiero: ingresos de clientes → tesorería → presupuestos
+              de las cuatro unidades → pagos de personal y proveedores →
+              seguimiento trimestral. Los acoplamientos representan coordinación
+              de gasto; no son transferencias monetarias entre departamentos.
+            </p>
+            <p>
+              <b>Reglas de negocio:</b> valores no negativos, revisión de fondos
+              disponibles y protección de compromisos críticos. El caso usa un
+              fondo de referencia de 160 mil Bs; la página señala excedentes sin
+              recortar la solución numérica.
+            </p>
+          </article>
+          <article class="panel formula">
+            <h3>Objetivo financiero</h3>
+            <div class="equation">
+              min J(x) = ½ Σ wᵢ(xᵢ − tᵢ)²<br />+ ½ c Σ (xᵢ − xᵢ₊₁)²
+            </div>
+            <p>
+              Primera suma: i = 1…4. Segunda: i = 1…3. Cada xᵢ y tᵢ se expresa
+              en <b>miles de bolivianos por trimestre</b>. J es una penalización
+              de planificación, no beneficio ni flujo de caja. wᵢ y c ponderan
+              desviaciones cuadráticas.
+            </p>
+            <p>
+              La coordinación c = 0,5 favorece presupuestos próximos en unidades
+              conectadas; es una simplificación pedagógica que debe calibrarse
+              si las escalas operativas reales difieren.
+            </p>
+          </article>
+        </div>
+        <details open>
+          <summary>Derivación, coeficientes y demostración formal</summary>
+          <p>
+            Al imponer ∇J(x) = 0 se obtiene Ax = b, con A = diag(w) + cL, donde
+            L es el laplaciano de la cadena 1–2–3–4 y bᵢ = wᵢtᵢ. A tiene
+            diagonal [w₁+c, w₂+2c, w₃+2c, w₄+c] y aᵢ,ᵢ₊₁ = aᵢ₊₁,ᵢ = −c; los
+            otros elementos son cero.
+          </p>
+          <div class="equation">
+            vᵀAv = Σ wᵢvᵢ² + c Σ (vᵢ − vᵢ₊₁)² &gt; 0 para v ≠ 0
+          </div>
+          <p>
+            En los tres escenarios wᵢ &gt; 0 y c = 0,5 ≥ 0. Por tanto A es
+            simétrica y definida positiva y J tiene un único minimizador. Los
+            menores principales positivos calculados por Cholesky verifican
+            también el criterio de Sylvester. Para matrices editadas, se
+            comprueba simetría y factorización de Cholesky; la interpretación de
+            negocio original puede dejar de ser válida.
+          </p>
+          <p>
+            <b>Procedencia:</b> todos los presupuestos, metas y ponderaciones
+            son supuestos académicos propios; no provienen de una empresa real.
+            Ideal: w = [2,3,2,3], t = [40,55,30,25]. Estrés: igual w, t =
+            [35,42,30,20]. Mal condicionado: w = [1,100,10000,1000000], metas
+            ideales. Las penalizaciones extremas representan rigidez contractual
+            deliberadamente exagerada para estudiar estabilidad, no estimaciones
+            del mercado boliviano.
+          </p>
+        </details>
+      </section>
+      <section id="laboratorio">
+        <div class="sectiontitle">
+          <div>
+            <div class="eyebrow">03 / LABORATORIO INTERACTIVO</div>
+            <h2>Del presupuesto a la solución.</h2>
+          </div>
+          <span class="live">● Recálculo automático</span>
+        </div>
+        <div class="scenarios" id="scenarioButtons"></div>
+        <p id="scenarioNote" class="scenarioNote"></p>
+        <div class="twocol editor">
+          <article class="panel">
+            <div class="panelhead">
+              <h3>Matriz de relaciones A</h3>
+              <span class="badge">Simétrica · 4 × 4</span>
+            </div>
+            <div id="matrix" class="matrix"></div>
+            <label class="check"
+              ><input type="checkbox" id="mirror" checked /> Vincular entradas
+              simétricas</label
+            >
+            <div class="vectorlabel">Vector de objetivos ponderados b</div>
+            <div id="vector" class="vector"></div>
+          </article>
+          <article class="panel">
+            <h3>Configuración del cálculo</h3>
+            <label
+              >Precondicionador<select id="pre">
+                <option value="jacobi">Jacobi · M = diag(A)</option>
+                <option value="none">Identidad · sin precondicionar</option>
+              </select></label
+            >
+            <div class="twocol controls">
+              <label
+                >Tolerancia<input
+                  id="tol"
+                  type="number"
+                  value="0.000001"
+                  step="any" /></label
+              ><label
+                >Máx. iteraciones<input
+                  id="max"
+                  type="number"
+                  value="100"
+                  min="1"
+                  max="10000"
+              /></label>
+            </div>
+            <div class="vectorlabel">Vector inicial x₀</div>
+            <div id="initial" class="vector"></div>
+            <div class="actions">
+              <button class="primary" id="execute">Calcular solución →</button
+              ><button class="outline" id="reset">Restablecer</button>
+            </div>
+            <span class="small"
+              >Para la entrega: tolerancia 10⁻⁶, x₀ = 0 y Jacobi.</span
+            >
+          </article>
+        </div>
+        <div id="error" role="alert" hidden></div>
+        <div id="results"></div>
+      </section>
+      <section id="comparativa">
+        <div class="eyebrow">04 / ANÁLISIS TRANSVERSAL</div>
+        <h2>La misma organización. Tres realidades.</h2>
+        <p>
+          Comparación reproducible de los escenarios originales con Jacobi, x₀ =
+          0, tolerancia 10⁻⁶ y Nmáx = 100. Las ediciones del simulador no
+          sobrescriben estos casos de referencia.
+        </p>
+        <div id="comparison" class="tablewrap"></div>
+        <div id="proofs" class="twocol"></div>
+      </section>
+      <section id="metodo">
+        <div class="eyebrow">05 / TRAZABILIDAD MATEMÁTICA</div>
+        <h2>Cada iteración tiene una explicación.</h2>
+        <div class="twocol">
+          <article class="panel">
+            <h3>Solución numérica de referencia</h3>
+            <p>
+              Se factoriza A = LLᵀ mediante Cholesky. Primero se resuelve Ly = b
+              por sustitución hacia adelante; luego Lᵀx = y hacia atrás. La
+              referencia utiliza aritmética de punto flotante: no se presenta
+              como solución exacta simbólica.
+            </p>
+            <div class="equation">
+              Lᵢᵢ = √(aᵢᵢ − Σ Lᵢₖ²)<br />Lᵢⱼ = (aᵢⱼ − Σ LᵢₖLⱼₖ) / Lⱼⱼ
+            </div>
+            <p>
+              Las sumas se toman sobre los índices anteriores a la columna
+              calculada. La matriz L y el residuo de referencia se muestran en
+              el simulador.
+            </p>
+          </article>
+          <article class="panel">
+            <h3>GCP y contraste GC</h3>
+            <div class="equation">
+              r₀ = b − Ax₀; Mz₀ = r₀; p₀ = z₀<br />αₖ = (rₖᵀzₖ)/(pₖᵀApₖ)<br />xₖ₊₁
+              = xₖ + αₖpₖ<br />rₖ₊₁ = rₖ − αₖApₖ<br />Mzₖ₊₁ = rₖ₊₁<br />βₖ =
+              (rₖ₊₁ᵀzₖ₊₁)/(rₖᵀzₖ)<br />pₖ₊₁ = zₖ₊₁ + βₖpₖ
+            </div>
+            <p>
+              Parada: ‖b − Axₖ‖₂ / ‖b‖₂ &lt; ε, o Nmáx. Se verifica el residuo
+              verdadero después de cada paso. GC usa M = I; Jacobi aplica zᵢ =
+              rᵢ/aᵢᵢ sin invertir una matriz completa. Si b = 0 se usa residuo
+              absoluto, expresamente identificado.
+            </p>
+          </article>
+        </div>
+        <details>
+          <summary>Normas, error y relación con Suñagua (2020)</summary>
+          <p>
+            Eaᵢ = |xref,ᵢ − xGCP,ᵢ|; Erᵢ = Eaᵢ/|xref,ᵢ|; Epᵢ = 100 Erᵢ. Cuando
+            xref,ᵢ = 0, Er y Ep se muestran como no definidos.
+          </p>
+          <p>
+            Se usa la norma infinito inducida para ambos números de condición:
+            κ∞(B) = ‖B‖∞ ‖B⁻¹‖∞, con ‖B‖∞ = maxᵢ Σⱼ |bᵢⱼ|. La inversa se calcula
+            por Gauss-Jordan con pivoteo parcial. B es A o M⁻¹A. Esta última
+            puede ser no simétrica; no se confunde su número de condición con un
+            cociente de autovalores.
+          </p>
+          <p>
+            El artículo explica el cambio simétrico C A Cᵀ. Aquí C = M⁻¹/² para
+            Jacobi. La implementación utiliza la formulación equivalente con Mz
+            = r en las variables originales. La notación M de la interfaz
+            corresponde al precondicionador de la consigna, no a la matriz
+            transformada denominada M en parte del artículo.
+          </p>
+          <p>
+            En aritmética exacta GC converge en a lo sumo n pasos; el redondeo y
+            la pérdida de conjugación pueden requerir más. Menos iteraciones no
+            garantiza menor tiempo total en un sistema pequeño de cuatro
+            variables. No se afirma una aceleración temporal medida.
+          </p>
+        </details>
+      </section>
+      <section id="qa">
+        <div class="sectiontitle">
+          <div>
+            <div class="eyebrow">06 / CONTROL DE CALIDAD</div>
+            <h2>Resultados que se pueden comprobar.</h2>
+          </div>
+          <button class="primary" id="runqa">Ejecutar pruebas ↻</button>
+        </div>
+        <p>
+          Las pruebas ejecutan el motor real en este navegador; no son etiquetas
+          estáticas. La prueba de interfaz cambia temporalmente b₁, dispara el
+          mismo evento de edición y restaura los valores.
+        </p>
+        <div id="qaout" class="tablewrap"></div>
+      </section>
+      <section id="conclusiones">
+        <div class="eyebrow">07 / VALOR ORGANIZACIONAL</div>
+        <h2>Mejor cálculo. Mejor criterio.</h2>
+        <div class="units">
+          <article>
+            <span>01 / PLANIFICACIÓN</span>
+            <h3>El estrés cambia la decisión</h3>
+            <p>
+              El total de referencia pasa de 151,64 a 127,39 mil Bs: una caída
+              del 15,99 %. A no cambia, por lo que su condición tampoco.
+              Seguridad se mantiene próxima a su meta protegida.
+            </p>
+          </article>
+          <article>
+            <span>02 / ESTABILIDAD</span>
+            <h3>Jacobi equilibra las escalas</h3>
+            <p>
+              Las rigideces contractuales elevan κ∞(A) por encima de 670 mil. El
+              precondicionamiento reduce κ∞(M⁻¹A) a aproximadamente 1,78.
+            </p>
+          </article>
+          <article>
+            <span>03 / INTERPRETACIÓN</span>
+            <h3>Verifica cada presupuesto</h3>
+            <p>
+              Un residuo relativo global inferior a 10⁻⁶ no garantiza un error
+              relativo pequeño en cada área. Examina la tabla y prueba una
+              tolerancia de 10⁻¹⁰ antes de redondear montos.
+            </p>
+          </article>
+          <article>
+            <span>04 / GOBERNANZA</span>
+            <h3>El modelo apoya al comité</h3>
+            <p>
+              El valor está en coordinar dependencias y hacer explícitas
+              prioridades. El modelo no impone restricciones duras de caja ni
+              mínimos contractuales: si son obligatorios, se necesita
+              optimización restringida.
+            </p>
+          </article>
+        </div>
+        <div class="panel">
+          <h3>Guía de uso y recomendaciones</h3>
+          <p>
+            1. Carga un escenario y observa sus supuestos. 2. Revisa matriz,
+            metas y configuración. 3. Modifica A o b; el cálculo se actualiza
+            automáticamente. 4. Compara referencia, errores e iteraciones. 5.
+            Ejecuta QA y revisa el saldo del fondo. 6. Registra tu nombre e
+            imprime si necesitas una copia.
+          </p>
+          <p>
+            Calibrar las ponderaciones con responsables financieros; validar
+            contratos y disponibilidad antes de aprobar recursos; conservar un
+            registro de supuestos y revisar trimestralmente el modelo. Una
+            matriz editada puede ser válida numéricamente y carecer de sentido
+            organizacional.
+          </p>
+        </div>
+        <details open>
+          <summary>Referencias y fuentes</summary>
+          <p>
+            <a
+              href="https://cmat.umsa.bo/revmat/rbm4/psunagua_gcp.pdf"
+              target="_blank"
+              rel="noopener"
+              >Suñagua S., P. (2020). Método de Gradientes Conjugados
+              Precondicionado. Revista Boliviana de Matemática – UMSA, 04,
+              2–7.</a
+            >
+          </p>
+          <p>
+            Golub, G. H. y Van Loan, C. F. (2013). Matrix Computations, 4.ª ed.
+            Johns Hopkins University Press. Bibliografía complementaria indicada
+            por la consigna.
+          </p>
+          <p>
+            Saad, Y. (2003). Iterative Methods for Sparse Linear Systems, 2.ª
+            ed. SIAM. Bibliografía complementaria indicada por la consigna.
+          </p>
+          <p>
+            Fuente de requisitos: Desafío académico de Métodos Numéricos, UMSA,
+            documento proporcionado. Fuente de datos: construcción académica
+            propia descrita en el caso de estudio. Sin cotizaciones ni datos
+            financieros reales.
+          </p>
+        </details>
+      </section>
+      <footer>
+        <span>Ingeniería de Sistemas · Métodos numéricos · UMSA</span
+        ><a href="source.zip" download>Descargar código fuente →</a>
+      </footer>
+    </main>
+    <script src="math.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
